@@ -32,19 +32,6 @@ EJS_templates_PDF_generation/
 - Node.js (v14 or higher recommended)
 - npm (comes with Node.js)
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/meetduggar23/EJS_templates_PDF_generation.git
-   cd EJS_templates_PDF_generation
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
 ## Usage
 
 ### Chart Validation
