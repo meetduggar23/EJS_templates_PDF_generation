@@ -1,0 +1,42 @@
+{
+  "type": "gantt",
+  "title": "Enterprise ERP Implementation Timeline",
+  "tasks": [
+    {
+      "name": "Requirement Gathering",
+      "start": "2026-01-01",
+      "end": "2026-01-20",
+      "progress": 100
+    },
+    {
+      "name": "Architecture Design",
+      "start": "2026-01-15",
+      "end": "2026-02-10",
+      "progress": 90
+    },
+    {
+      "name": "Backend Development",
+      "start": "2026-02-01",
+      "end": "2026-04-30",
+      "progress": 65
+    },
+    {
+      "name": "Frontend Development",
+      "start": "2026-03-01",
+      "end": "2026-05-15",
+      "progress": 55
+    },
+    {
+      "name": "Testing",
+      "start": "2026-05-01",
+      "end": "2026-06-15",
+      "progress": 20
+    },
+    {
+      "name": "Production Rollout",
+      "start": "2026-06-20",
+      "end": "2026-07-10",
+      "progress": 0
+    }
+  ]
+}

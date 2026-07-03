@@ -1,0 +1,98 @@
+{
+  "type": "bubble",
+  "title": "Global Startup Ecosystem Analysis",
+  "subtitle": "Funding vs Revenue vs Market Valuation",
+  "datasets": [
+    {
+      "label": "AI Startups",
+      "backgroundColor": "rgba(54, 162, 235, 0.7)",
+      "borderColor": "#36A2EB",
+      "borderWidth": 2,
+      "data": [
+        { "x": 12, "y": 85, "r": 15 },
+        { "x": 18, "y": 120, "r": 22 },
+        { "x": 25, "y": 180, "r": 30 },
+        { "x": 32, "y": 250, "r": 38 },
+        { "x": 45, "y": 320, "r": 42 },
+        { "x": 60, "y": 410, "r": 50 }
+      ]
+    },
+    {
+      "label": "FinTech",
+      "backgroundColor": "rgba(255, 99, 132, 0.7)",
+      "borderColor": "#FF6384",
+      "borderWidth": 2,
+      "data": [
+        { "x": 8, "y": 60, "r": 12 },
+        { "x": 15, "y": 95, "r": 18 },
+        { "x": 22, "y": 145, "r": 25 },
+        { "x": 35, "y": 230, "r": 32 },
+        { "x": 42, "y": 280, "r": 36 },
+        { "x": 55, "y": 350, "r": 44 }
+      ]
+    },
+    {
+      "label": "HealthTech",
+      "backgroundColor": "rgba(75, 192, 192, 0.7)",
+      "borderColor": "#4BC0C0",
+      "borderWidth": 2,
+      "data": [
+        { "x": 10, "y": 50, "r": 10 },
+        { "x": 20, "y": 100, "r": 16 },
+        { "x": 30, "y": 160, "r": 24 },
+        { "x": 40, "y": 220, "r": 28 },
+        { "x": 50, "y": 310, "r": 35 },
+        { "x": 65, "y": 450, "r": 48 }
+      ]
+    },
+    {
+      "label": "E-Commerce",
+      "backgroundColor": "rgba(255, 206, 86, 0.7)",
+      "borderColor": "#FFCE56",
+      "borderWidth": 2,
+      "data": [
+        { "x": -5, "y": 20, "r": 8 },
+        { "x": 5, "y": 45, "r": 12 },
+        { "x": 12, "y": 75, "r": 15 },
+        { "x": 28, "y": 140, "r": 22 },
+        { "x": 48, "y": 260, "r": 34 },
+        { "x": 70, "y": 520, "r": 60 }
+      ]
+    }
+  ],
+  "options": {
+    "responsive": true,
+    "maintainAspectRatio": false,
+    "plugins": {
+      "legend": {
+        "display": true,
+        "position": "top"
+      },
+      "title": {
+        "display": true,
+        "text": "Global Startup Funding Analysis 2026"
+      },
+      "tooltip": {
+        "enabled": true
+      }
+    },
+    "scales": {
+      "x": {
+        "title": {
+          "display": true,
+          "text": "Funding (Million USD)"
+        },
+        "min": -10,
+        "max": 80
+      },
+      "y": {
+        "title": {
+          "display": true,
+          "text": "Annual Revenue (Million USD)"
+        },
+        "min": 0,
+        "max": 600
+      }
+    }
+  }
+}

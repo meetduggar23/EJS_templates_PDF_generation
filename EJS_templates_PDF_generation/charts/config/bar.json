@@ -1,0 +1,41 @@
+{
+  "type": "bar",
+  "title": "Regional Sales Performance",
+  "labels": ["North", "South", "East", "West", "Central", "International"],
+  "datasets": [
+    {
+      "label": "2024 Revenue",
+      "data": [125000, 98000, 143000, 112000, 87000, 165000],
+      "backgroundColor": [
+        "#36A2EB",
+        "#FF6384",
+        "#4BC0C0",
+        "#FFCE56",
+        "#9966FF",
+        "#FF9F40"
+      ],
+      "borderWidth": 2
+    },
+    {
+      "label": "2025 Revenue",
+      "data": [148000, 121000, 168000, 137000, 103000, 201000],
+      "backgroundColor": [
+        "#1E88E5",
+        "#E91E63",
+        "#009688",
+        "#FBC02D",
+        "#673AB7",
+        "#FB8C00"
+      ],
+      "borderWidth": 2
+    }
+  ],
+  "options": {
+    "responsive": true,
+    "plugins": {
+      "legend": {
+        "position": "top"
+      }
+    }
+  }
+}

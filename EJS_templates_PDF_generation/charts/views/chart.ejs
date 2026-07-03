@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>
+    <% if (config) { %><%= config.title %><% } else { %>Chart POC<% } %>
+  </title>
+
+  <!--
+    Chart.js is served from /public/js/chart.umd.min.js (local file).
+    No internet / CDN required.
+  -->
+  <script src="/js/chart.umd.min.js"></script>
+
+  <script>
+    // Capture global errors so Puppeteer can report them
+    window.onerror = function(msg, src, line, col, err) {
+      try { console && console.log && console.log('PAGE_ERROR: ' + msg + ' @ ' + src + ':' + line + ':' + col); } catch(e){}
+      return false;
+    };
+  </script>
+
+  <style>
+    /* Minimal styling — this is a POC, not a dashboard */
+    body       { font-family: sans-serif; max-width: 760px; margin: 40px auto; padding: 0 24px; color: #222; }
+    h1         { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+    p.subtitle { font-size: 0.85rem; color: #666; margin: 0 0 24px; }
+    h2         { font-size: 1.05rem; margin: 48px 0 8px; border-top: 1px solid #e5e5e5; padding-top: 20px; }
+
+    /* Fixed-height wrapper so the canvas always has a defined height */
+    .chart-wrap { position: relative; width: 100%; height: 420px; margin-bottom: 16px; }
+
+    /* JSON config block shown below each chart for POC visibility */
+    pre  {
+      background: #f6f6f6;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    pre em { display: block; color: #888; font-style: normal; margin-bottom: 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Error message */
+    .error {
+      color: #b00;
+      background: #fff5f5;
+      border: 1px solid #fcc;
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<%
+  /*
+   * ═══════════════════════════════════════════════════════════════════════
+   *  SINGLE REUSABLE EJS TEMPLATE — chart.ejs
+   *
+   *  This template handles three states, all driven by what Express passes:
+   *
+   *   1. config  (object) — render one chart
+   *   2. multi   (array)  — iterate and render multiple charts
+   *   3. error   (string) — display a validation error message
+   *
+   *  The template NEVER changes. Only the JSON data passed by Express changes.
+   * ═══════════════════════════════════════════════════════════════════════
+   */
+%>
+
+<% if (error) { %>
+
+  <!-- ── STATE 3: Error ─────────────────────────────────────── -->
+  <p class="error">⚠ <%= error %></p>
+
+<% } else if (config) { %>
+
+  <!-- ── STATE 1: Single Chart ──────────────────────────────── -->
+  <!--
+    config.type        → tells Chart.js which chart to draw  (from JSON)
+    config.title       → page heading                         (from JSON)
+    config.labels      → axis labels / segment names          (from JSON)
+    config.data        → numeric values                       (from JSON)
+    config.datasetLabel→ legend label                         (from JSON)
+    config.colors      → background colours                   (from JSON)
+    config.options     → Chart.js options object              (from JSON)
+  -->
+
+  <h1><%= config.title %></h1>
+  <p class="subtitle">Chart type: <strong><%= config.type %></strong> — rendered by a single reusable EJS template</p>
+
+  <!-- Canvas: Chart.js draws inside here -->
+  <div class="chart-wrap">
+    <canvas id="chartSingle" width="700" height="420"></canvas>
+  </div>
+
+  <!-- JSON configuration — shown so the reader can see exactly what drove this chart -->
+  <pre><em>JSON Configuration passed to this template:</em><%= JSON.stringify(config, null, 2) %></pre>
+
+<% } %>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Chart.js Initialisation Script
+     ─────────────────────────────────────────────────────────────────────
+     renderChart(canvasId, cfg) reads EVERY value from the JSON config:
+       cfg.type         → chart type
+       cfg.labels       → labels
+       cfg.data         → values
+       cfg.datasetLabel → legend label
+       cfg.colors       → colours  (JSON-supplied or default palette)
+       cfg.options      → Chart.js options (JSON-supplied, merged over base)
+
+     EJS renders this <script> block on the server.
+     The EJS raw output tags (<%- %>) inject the JSON into the HTML.
+     Chart.js then reads that JSON in the browser and draws the chart.
+════════════════════════════════════════════════════════════════════════ -->
+<script>
+  // Capture global errors so Puppeteer can report them
+  window.onerror = function(msg, src, line, col, err) {
+    try { console && console.log && console.log('PAGE_ERROR: ' + msg + ' @ ' + src + ':' + line + ':' + col); } catch(e){}
+    return false;
+  };
+
+  // ── Default colour palette (used when cfg.colors is not supplied in JSON) ──
+  var DEFAULT_PALETTE = [
+    'rgba(99,  102, 241, 0.85)',
+    'rgba(236,  72, 153, 0.85)',
+    'rgba(16,  185, 129, 0.85)',
+    'rgba(245, 158,  11, 0.85)',
+    'rgba(59,  130, 246, 0.85)',
+    'rgba(239,  68,  68, 0.85)',
+    'rgba(139,  92, 246, 0.85)',
+    'rgba(20,  184, 166, 0.85)',
+  ];
+
+  /**
+   * renderChart(canvasId, cfg)
+   *
+   * @param {string} canvasId  - id of the <canvas> element
+   * @param {object} cfg       - the JSON config object from Express / EJS
+   *
+   * This function is generic. It works for every chart type without
+   * any if/else on chart type for the canvas drawing itself —
+   * Chart.js handles that internally based on cfg.type.
+   */
+  function renderChart(canvasId, cfg) {
+
+    // Helper function to convert rgba/rgba colors to solid (opaque) version
+    function solidColor(c) { return String(c).replace(/[\d.]+\)$/, '1)'); }
+
+    // If the config already supplies Chart.js `datasets` (scatter, multiple datasets, etc.)
+    // use them directly. Otherwise build a single-dataset shape from cfg.data / cfg.labels.
+    var dataObj = { labels: cfg.labels || [] };
+
+    if (Array.isArray(cfg.datasets) && cfg.datasets.length > 0) {
+      // Use provided datasets as-is (respecting dataset.backgroundColor, borderColor, etc.)
+      dataObj.datasets = cfg.datasets.map(function(ds) {
+        // Defensive copy to avoid mutating original config
+        var copy = Object.assign({}, ds);
+        // Ensure dataset has a sensible label for the legend
+        if (copy.label == null) copy.label = cfg.datasetLabel || cfg.title || 'Dataset';
+        var isMultiSegmentInner = ['pie', 'doughnut', 'polararea'].indexOf((cfg.type||'').toLowerCase()) !== -1;
+
+        // If this is a multi-segment chart and backgroundColor wasn't provided,
+        // build a per-slice array from cfg.colors or DEFAULT_PALETTE.
+        if (isMultiSegmentInner) {
+          var needed = Array.isArray(copy.data) ? copy.data.length : (Array.isArray(cfg.data) ? cfg.data.length : 0);
+          if (!Array.isArray(copy.backgroundColor) || copy.backgroundColor.length < needed) {
+            var sourceColors = Array.isArray(copy.backgroundColor) && copy.backgroundColor.length >= needed ? copy.backgroundColor : (Array.isArray(cfg.colors) && cfg.colors.length ? cfg.colors : DEFAULT_PALETTE);
+            var colorsArr = sourceColors.slice(0, needed);
+            var fillIdx = 0;
+            while (colorsArr.length < needed) { colorsArr.push(DEFAULT_PALETTE[fillIdx % DEFAULT_PALETTE.length]); fillIdx++; }
+            copy.backgroundColor = colorsArr;
+          }
+          // Derive borderColor array from background colors
+          copy.borderColor = Array.isArray(copy.backgroundColor) ? copy.backgroundColor.map(solidColor) : solidColor(copy.backgroundColor);
+        } else {
+          // Provide sensible defaults for non multi-segment charts
+          if (copy.backgroundColor == null) copy.backgroundColor = DEFAULT_PALETTE[0];
+          if (copy.borderColor == null)     copy.borderColor     = copy.backgroundColor;
+        }
+
+        if (copy.borderWidth == null)     copy.borderWidth     = 2;
+        if (copy.pointRadius == null)     copy.pointRadius     = (cfg.type === 'scatter' || cfg.type === 'bubble' ? 6 : 4);
+        if (copy.pointHoverRadius == null) copy.pointHoverRadius = (cfg.type === 'scatter' || cfg.type === 'bubble' ? 8 : 6);
+        if (copy.fill == null)            copy.fill            = false;
+        return copy;
+      });
+    } else {
+        // Build a single dataset from flat cfg.data
+        var isMultiSegment = ['pie', 'doughnut', 'polararea'].indexOf((cfg.type||'').toLowerCase()) !== -1;
+
+        var bgColors;
+        if (isMultiSegment) {
+          var needed = (cfg.data || []).length || 0;
+          if (Array.isArray(cfg.colors) && cfg.colors.length >= needed) {
+            bgColors = cfg.colors.slice(0, needed);
+          } else if (Array.isArray(cfg.colors) && cfg.colors.length > 0) {
+            // Use provided colors and fill the rest from default palette
+            bgColors = cfg.colors.slice();
+            var fillIdx = 0;
+            while (bgColors.length < needed) {
+              bgColors.push(DEFAULT_PALETTE[fillIdx % DEFAULT_PALETTE.length]);
+              fillIdx++;
+            }
+          } else {
+            bgColors = DEFAULT_PALETTE.slice(0, needed);
+          }
+        } else {
+          bgColors = (cfg.colors && cfg.colors.length > 0) ? cfg.colors[0] : DEFAULT_PALETTE[0];
+        }
+
+        var borderColors = Array.isArray(bgColors) ? bgColors.map(solidColor) : solidColor(bgColors);
+
+      var dataset = {
+        label:           cfg.datasetLabel || cfg.title,
+        data:            cfg.data || [],
+        backgroundColor: bgColors,
+        borderColor:     borderColors,
+        borderWidth:     2,
+        pointRadius:     4,
+        fill:            false,
+      };
+
+      if (cfg.type === 'line') { dataset.tension = 0.4; dataset.fill = true; }
+      if (cfg.type === 'scatter') { dataset.showLine = true; dataset.tension = 0; }
+
+      dataObj.datasets = [dataset];
+    }
+
+    var baseOptions = {
+      responsive:          true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, position: 'top' }, title: { display: false } },
+    };
+
+    var finalOptions = Object.assign({}, baseOptions, cfg.options || {});
+
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) { console.error('Canvas not found:', canvasId); return; }
+
+    // Destroy existing chart if present to prevent "Canvas is already in use" error
+    var existingChart = Chart.getChart(canvasId);
+    if (existingChart) {
+      existingChart.destroy();
+    }
+
+    var createType = cfg.type;
+
+
+    // Debug: print the final data and options to the page console for inspection
+    try { console.log('CHART_SUMMARY: datasets=' + (dataObj.datasets?dataObj.datasets.length:0) + ' firstDataLen=' + (dataObj.datasets && dataObj.datasets[0] && dataObj.datasets[0].data ? dataObj.datasets[0].data.length : 'n/a') + ' bgColors=' + (dataObj.datasets && dataObj.datasets[0] && Array.isArray(dataObj.datasets[0].backgroundColor) ? dataObj.datasets[0].backgroundColor.length : (typeof dataObj.datasets[0].backgroundColor))); } catch(e){}
+    try { console.log('CHART_OPTIONS_SUMMARY: plugins=' + (finalOptions.plugins?Object.keys(finalOptions.plugins).join(','):'none') + ' legend=' + (finalOptions.plugins && finalOptions.plugins.legend ? JSON.stringify(finalOptions.plugins.legend):'') ); } catch(e){}
+    try {
+      var created = new Chart(canvas.getContext('2d'), { type: createType, data: dataObj, options: finalOptions });
+      try { console.log('CHART_CREATED:', !!created); } catch(e){}
+      // expose last created chart for debugging
+      try { window.__lastChart = created; } catch(e){}
+    } catch (err) {
+      try { console.error('CHART_ERROR:', err && err.message); } catch(e){}
+    }
+  }
+
+  // make renderChart callable from global scope (ensures Puppeteer can call it)
+  try { window.renderChart = renderChart; } catch(e){}
+
+  // ── Wait for DOM to be ready, then render ──────────────────────────────────
+  function __runRender() {
+    <% if (config) { %>
+        // expose cfg for debugging/manual invocation
+        try { window.__injected_cfg = <%- JSON.stringify(config).replace(/</g, '\\u003c') %>; } catch(e){}
+        renderChart('chartSingle', window.__injected_cfg);
+    <% } %>
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', __runRender);
+  } else {
+    __runRender();
+  }
+
+</script>
+
+</body>
+</html>

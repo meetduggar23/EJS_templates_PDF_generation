@@ -1,0 +1,27 @@
+{
+  "type": "radar",
+  "title": "Cloud Platform Feature Comparison",
+  "labels": [
+    "Performance",
+    "Security",
+    "Scalability",
+    "Reliability",
+    "AI Services",
+    "DevOps",
+    "Pricing"
+  ],
+  "datasets": [
+    {
+      "label": "Platform A",
+      "data": [95,92,98,96,90,88,75],
+      "backgroundColor": "rgba(54,162,235,0.2)",
+      "borderColor": "#36A2EB"
+    },
+    {
+      "label": "Platform B",
+      "data": [88,90,92,89,95,91,82],
+      "backgroundColor": "rgba(255,99,132,0.2)",
+      "borderColor": "#FF6384"
+    }
+  ]
+}

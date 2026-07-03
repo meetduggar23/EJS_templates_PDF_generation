@@ -1,0 +1,85 @@
+{
+  "type": "doughnut",
+  "title": "Enterprise Cloud Infrastructure Cost Analysis 2026",
+  "subtitle": "Annual Distribution of Technology Spending",
+  "labels": [
+    "Compute Services",
+    "Storage Services",
+    "Database Services",
+    "Networking",
+    "Load Balancers",
+    "Monitoring",
+    "Logging",
+    "Security",
+    "Identity Management",
+    "Backup & Recovery",
+    "AI/ML Services",
+    "DevOps Tools"
+  ],
+  "datasets": [
+    {
+      "label": "Annual Cost Distribution",
+      "data": [
+        450000,
+        180000,
+        220000,
+        125000,
+        85000,
+        95000,
+        75000,
+        140000,
+        65000,
+        110000,
+        175000,
+        90000
+      ],
+      "backgroundColor": [
+        "#36A2EB",
+        "#FF6384",
+        "#4BC0C0",
+        "#FFCE56",
+        "#9966FF",
+        "#FF9F40",
+        "#8BC34A",
+        "#795548",
+        "#E91E63",
+        "#607D8B",
+        "#3F51B5",
+        "#009688"
+      ],
+      "borderColor": "#FFFFFF",
+      "borderWidth": 3,
+      "hoverOffset": 20,
+      "offset": [0, 0, 0, 10, 0, 0, 0, 15, 0, 0, 0, 0]
+    }
+  ],
+  "options": {
+    "responsive": true,
+    "maintainAspectRatio": false,
+    "cutout": "65%",
+    "plugins": {
+      "legend": {
+        "display": true,
+        "position": "right"
+      },
+      "title": {
+        "display": true,
+        "text": "Enterprise Cloud Infrastructure Spending"
+      },
+      "tooltip": {
+        "enabled": true
+      }
+    },
+    "animation": {
+      "animateRotate": true,
+      "animateScale": true
+    }
+  },
+  "metadata": {
+    "currency": "USD",
+    "fiscalYear": 2026,
+    "department": "Engineering",
+    "totalBudget": 1810000,
+    "generatedAt": "2026-06-06T12:00:00Z"
+  }
+}

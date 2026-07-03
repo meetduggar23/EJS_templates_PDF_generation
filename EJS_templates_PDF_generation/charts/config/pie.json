@@ -1,0 +1,37 @@
+{
+  "type": "pie",
+  "title": "Market Share Analysis",
+  "labels": [
+    "Company A",
+    "Company B",
+    "Company C",
+    "Company D",
+    "Company E",
+    "Company F",
+    "Company G",
+    "Company H",
+    "Company I",
+    "Company J",
+    "Company K",
+    "Company L"
+  ],
+  "datasets": [
+    {
+      "label": "Market Share",
+      "data": [
+        450,
+        380,
+        320,
+        290,
+        250,
+        210,
+        180,
+        140,
+        110,
+        90,
+        70,
+        50
+      ]
+    }
+  ]
+}

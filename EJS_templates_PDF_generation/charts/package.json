@@ -1,0 +1,22 @@
+{
+  "name": "ejs-chart-poc",
+  "version": "1.0.0",
+  "description": "POC: Single reusable EJS template rendering multiple chart types via JSON configuration",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "pdf": "node generate-pdf.js",
+    "pdf:all": "node generate-pdf.js --all"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.4",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "ollama": "^0.6.3",
+    "puppeteer": "^24.43.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
