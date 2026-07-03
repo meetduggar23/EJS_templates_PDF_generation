@@ -69,10 +69,3 @@ This script refactors the validation code for better readability by extracting c
 - `isGantt` - Checks if chart type is 'gantt'
 - `isScatterOrBubble` - Checks if chart type is 'scatter' or 'bubble'
 
-## Repository
-
-[GitHub Repository](https://github.com/meetduggar23/EJS_templates_PDF_generation)
-
-## License
-
-MIT
